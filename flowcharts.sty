@@ -1,0 +1,141 @@
+% Copyright 2016 Alexander Böhm
+
+\ProvidesPackage{flowcharts}[2016/04/27 v0.1.1 (Alexander Böhm)]%
+
+%%%%%%%%%%%%%%%%%%%%%
+% needed packages
+%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage[T1]{fontenc}        %% T1-fonts
+\RequirePackage{lmodern}            %% Latin Modern fonts
+\RequirePackage{graphicx}           %% include graphics
+\RequirePackage[scaled=0.9]{helvet} %% Helvetica as Arial-substitute
+\RequirePackage[absolute, overlay]{textpos}
+\RequirePackage{ifthen}
+\RequirePackage{color}
+
+\RequirePackage{tikz}				%% graphs, arrows, ...
+\usetikzlibrary{shapes,arrows,decorations.markings,arrows.meta,fadings,shadows}
+
+% color definition
+\definecolor{Highlight}			{RGB}{ 17,139,220}
+\definecolor{SectionFontColor}	{RGB}{255,255,255}
+\definecolor{SectionBackground}	{RGB}{ 17,140,220}
+\definecolor{FrameFontColor}	{RGB}{  0,  0,  0}
+\definecolor{FrameBackground}	{RGB}{255,255,255}
+\definecolor{ItemColor}			{RGB}{  0,  0,  0}
+
+\newcommand{\SetDefaultDiagramColors}{ %
+	\definecolor{DiagrammLineColor}	{RGB}{255,255,255} %
+	\definecolor{DiagrammFontColor}	{RGB}{255,255,255} %
+	\definecolor{DiagrammFillColor}	{RGB}{ 17,139,220} %
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% graphics, arrows, ...
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SetDefaultDiagramColors
+\newcommand*{\DiagrammLineColorVar}{DiagrammLineColor}
+\newcommand*{\DiagrammFillColorVar}{DiagrammFillColor}
+\newcommand*{\DiagrammFontColorVar}{DiagrammFontColor}
+\newcommand*{\DiagrammMinWidthVar}{0cm}
+\newcommand*{\DiagrammMinHeightVar}{1cm}
+\newcommand{\SetDiagrammLineColor}[1]{\newcommand*{\DiagrammLineColorVar}{#1}}
+\newcommand{\SetDiagrammFillColor}[1]{\newcommand*{\DiagrammFillColorVar}{#1}}
+\newcommand{\SetDiagrammFontColor}[1]{\newcommand*{\DiagrammFontColorVar}{#1}}
+\newcommand{\SetDiagrammMinWidth}[1]{\newcommand*{\DiagrammMinWidthVar}{#1}}
+\newcommand{\SetDiagrammMinHeight}[1]{\newcommand*{\DiagrammMinHeightVar}{#1}}
+
+
+\tikzfading[name=TransparentFading, top color=transparent!0, bottom color=transparent!95]
+
+\tikzset{DiagrammFill/.style = {
+	top color=\DiagrammFillColorVar!100,
+	bottom color=\DiagrammFillColorVar!50,
+	general shadow={
+		fill=transparent!50,
+		shadow xshift=0.05cm,
+		shadow yshift=-0.08cm,
+		path fading=TransparentFading
+	}
+}}
+
+\tikzset{FilledArrowStyle/.style = {
+	draw=black,
+	DiagrammFill,
+	single arrow,
+	single arrow head extend=.1cm,
+	text=\DiagrammFontColorVar,
+	\DiagrammLineColorVar,
+	minimum height=\DiagrammMinHeightVar,
+}}
+
+\tikzset{FilledDoubleArrowStyle/.style = {
+	draw=black,
+	DiagrammFill,
+	double arrow,
+	double arrow head extend=.1cm,
+	text=\DiagrammFontColorVar,
+	\DiagrammLineColorVar,
+	minimum height=\DiagrammMinHeightVar,
+}}
+
+\tikzstyle{RoundedTextBox} = [
+	rectangle,
+	draw,
+	text=\DiagrammFontColorVar,
+	\DiagrammLineColorVar,
+	text centered,
+	anchor=center,
+	rounded corners,
+	DiagrammFill,
+	minimum width=\DiagrammMinWidthVar,
+	minimum height=\DiagrammMinHeightVar,
+]
+
+\newcommand{\arrowleftright}[1][.5cm]{\hspace{0.01cm}\tikz[baseline=-0.2cm] \node[
+		FilledDoubleArrowStyle,minimum height=#1
+	]{};\hspace{0.01cm}}
+
+\newcommand{\arrowright}[1][.5cm]{\hspace{0.01cm}\tikz[baseline=-0.2cm] \node[
+		FilledArrowStyle,minimum height=#1
+	]{};\hspace{0.01cm}}
+
+\newcommand{\arrowleft}[1][.5cm]{\hspace{0.01cm}\tikz[baseline=-0.2cm] \node[
+		FilledArrowStyle,minimum height=#1,shape border rotate=180,
+	]{};\hspace{0.01cm}}
+
+\newcommand{\arrowup}[1][.5cm]{\hspace{0.01cm}\tikz[baseline=-0.2cm] \node[
+		FilledArrowStyle,minimum height=#1,shape border rotate=90,
+	]{};\hspace{0.01cm}}
+
+\newcommand{\arrowdown}[1][.5cm]{\hspace{0.01cm}\tikz[baseline=-0.2cm] \node[
+		FilledArrowStyle,minimum height=#1,shape border rotate=270,
+	]{};\hspace{0.01cm}}
+
+\newcommand{\textarrowleftright}[2][0cm]{\hspace{0.01cm}\tikz[baseline=-0.2cm] \node[
+		minimum width=#1,
+		FilledDoubleArrowStyle,
+	]{#2};\hspace{#1}}
+
+\newcommand{\textarrowright}[2][0cm]{\hspace{0.01cm}\tikz[baseline=-0.2cm] \node[
+		minimum width=#1,
+		FilledArrowStyle,
+	]{#2};\hspace{#1}}
+
+\newcommand{\textarrowleft}[1][0cm]{\hspace{0.01cm}\tikz[baseline=-0.2cm] \node[
+		FilledArrowStyle,
+		minimum width=#1,
+		shape border rotate=180,
+	]{#1};\hspace{0.01cm}}
+
+\newcommand{\textarrowdown}[2][1cm]{\hspace{0.01cm}\tikz[baseline=-0.2cm] \node[
+		FilledArrowStyle,
+		shape border rotate=270,
+	]{#2};\hspace{0.01cm}\hspace{#1}}
+
+\newcommand{\roundedtextbox}[2][1cm]{\hspace{0.01cm} \tikz[baseline=-0.2cm]\node[
+		RoundedTextBox,minimum width=#1
+	]{#2}; \hspace{0.01cm}}
+
